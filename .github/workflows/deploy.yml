@@ -1,0 +1,19 @@
+on: [push]
+
+jobs:
+  deploy_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Deploy Build Folder
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
+        with:
+          username: ${{ secrets.SSH_USERNAME }}
+          server: ${{ secrets.SERVER_IP }}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          local_path: "./build/*"
+          remote_path: "/var/www/app"
+          rsyncArgs: "--exclude=*.map"
+          sftpArgs: "-o ConnectTimeout=5"
